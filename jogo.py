@@ -8,186 +8,30 @@ pygame.display.set_caption("Desafio de Perguntas")
 font = pygame.font.Font(None, 36)
 
 class Desafio:
-    def _init_(self, pergunta, opcoes, resposta_certa):
+    def __init__(self, pergunta, opcoes, resposta_certa):
         self.pergunta = pergunta
         self.opcoes = opcoes
         self.resposta_certa = resposta_certa
-        
+       
     def mostrar(self):
         return self.pergunta, list(self.opcoes.items())
 
+def desenhar_mapa(jogador_pos, professor_pos):
+    for x in range(0, 800, 40):
+        for y in range(0, 600, 40):
+            rect = pygame.Rect(x, y, 40, 40)
+            pygame.draw.rect(screen, (200, 200, 200), rect, 1)
+   
+    # Desenhar o jogador
+    pygame.draw.rect(screen, (0, 255, 0), (jogador_pos[0] * 40, jogador_pos[1] * 40, 40, 40))
+    # Desenhar o professor
+    pygame.draw.rect(screen, (255, 0, 0), (professor_pos[0] * 40, professor_pos[1] * 40, 40, 40))
+
 def jogar():
-    desafios = [
-        Desafio("Quanto é 100 ÷ 20?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
+    # Desafios de Matemática
+    desafios_matematica = [
         Desafio("Qual é a média de 9, 9 e 9?", {'a': '9', 'b': '10', 'c': '8', 'd': '7'}, 'a'),
         Desafio("Quanto é 70 + 20?", {'a': '90', 'b': '91', 'c': '89', 'd': '88'}, 'a'),
-        Desafio("Qual é a soma de 4 e 8?", {'a': '12', 'b': '11', 'c': '13', 'd': '10'}, 'a'),
-        Desafio("Quanto é 60 ÷ 4?", {'a': '15', 'b': '14', 'c': '16', 'd': '13'}, 'a'),
-        Desafio("Qual é a média de 3, 4 e 5?", {'a': '4', 'b': '5', 'c': '3', 'd': '6'}, 'a'),
-        Desafio("Qual é a média de 5, 15 e 25?", {'a': '15', 'b': '14', 'c': '16', 'd': '13'}, 'a'),
-        Desafio("Quanto é 8 x 5?", {'a': '40', 'b': '41', 'c': '39', 'd': '42'}, 'a'),
-        Desafio("Qual é a soma de 12 e 5?", {'a': '17', 'b': '18', 'c': '16', 'd': '19'}, 'a'),
-        Desafio("Quanto é 6 + 3?", {'a': '9', 'b': '8', 'c': '7', 'd': '10'}, 'a'),
-        Desafio("Qual é a diferença entre 11 e 5?", {'a': '6', 'b': '7', 'c': '5', 'd': '4'}, 'a'),
-        Desafio("Quanto é 30 ÷ 3?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a média de 5, 10 e 15?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Quanto é 10 + 20?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Qual é a soma de 5 e 5?", {'a': '10', 'b': '11', 'c': '12', 'd': '13'}, 'a'),
-        Desafio("Qual é a média de 4, 6 e 10?", {'a': '6', 'b': '7', 'c': '5', 'd': '8'}, 'a'),
-        Desafio("Quanto é 25 - 10?", {'a': '15', 'b': '14', 'c': '16', 'd': '13'}, 'a'),
-        Desafio("Qual é a soma de 6 e 6?", {'a': '12', 'b': '11', 'c': '10', 'd': '9'}, 'a'),
-        Desafio("Quanto é 10 - 4?", {'a': '6', 'b': '5', 'c': '7', 'd': '8'}, 'a'),
-        Desafio("Qual é a média de 10, 10 e 10?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Quanto é 3 x 4?", {'a': '12', 'b': '11', 'c': '10', 'd': '13'}, 'a'),
-        Desafio("Qual é a diferença entre 5 e 2?", {'a': '3', 'b': '4', 'c': '2', 'd': '1'}, 'a'),
-        Desafio("Quanto é 60 - 20?", {'a': '40', 'b': '30', 'c': '50', 'd': '20'}, 'a'),
-        Desafio("Qual é a média de 10, 20 e 30?", {'a': '20', 'b': '30', 'c': '10', 'd': '40'}, 'a'),
-        Desafio("Quanto é 25 + 5?", {'a': '30', 'b': '31', 'c': '29', 'd': '32'}, 'a'),
-        Desafio("Qual é a soma de 8 e 8?", {'a': '16', 'b': '15', 'c': '14', 'd': '13'}, 'a'),
-        Desafio("Quanto é 90 - 40?", {'a': '50', 'b': '60', 'c': '70', 'd': '80'}, 'a'),
-        Desafio("Qual é a média de 10, 10 e 20?", {'a': '15', 'b': '14', 'c': '16', 'd': '13'}, 'a'),
-        Desafio("Qual é a soma de 5, 5 e 5?", {'a': '15', 'b': '14', 'c': '13', 'd': '12'}, 'a'),
-        Desafio("Quanto é 100 - 50?", {'a': '50', 'b': '60', 'c': '40', 'd': '30'}, 'a'),
-        Desafio("Qual é a soma de 12 e 3?", {'a': '15', 'b': '14', 'c': '16', 'd': '17'}, 'a'),
-        Desafio("Qual é a média de 1, 1 e 1?", {'a': '1', 'b': '2', 'c': '3', 'd': '4'}, 'a'),
-        Desafio("Qual é a soma de 50 e 25?", {'a': '75', 'b': '76', 'c': '74', 'd': '73'}, 'a'),
-        Desafio("Quanto é 1 + 9?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a diferença entre 6 e 1?", {'a': '5', 'b': '4', 'c': '6', 'd': '3'}, 'a'),
-        Desafio("Quanto é 80 - 10?", {'a': '70', 'b': '60', 'c': '80', 'd': '50'}, 'a'),
-        Desafio("Qual é a média de 0, 0 e 0?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 100 e 1?", {'a': '101', 'b': '102', 'c': '103', 'd': '100'}, 'a'),
-        Desafio("Qual é a média de 8, 9 e 10?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Quanto é 15 - 5?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a soma de 15 e 15?", {'a': '30', 'b': '29', 'c': '28', 'd': '27'}, 'a'),
-        Desafio("Quanto é 6 x 6?", {'a': '36', 'b': '35', 'c': '34', 'd': '37'}, 'a'),
-        Desafio("Qual é a média de 4, 4 e 4?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Quanto é 90 - 30?", {'a': '60', 'b': '50', 'c': '40', 'd': '70'}, 'a'),
-        Desafio("Qual é a soma de 2 e 8?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Quanto é 5 + 5?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Qual é a média de 7, 7 e 7?", {'a': '7', 'b': '8', 'c': '6', 'd': '5'}, 'a'),
-        Desafio("Quanto é 11 - 4?", {'a': '7', 'b': '8', 'c': '6', 'd': '5'}, 'a'),
-        Desafio("Qual é a soma de 9 e 9?", {'a': '18', 'b': '19', 'c': '17', 'd': '16'}, 'a'),
-        Desafio("Qual é a soma de 5, 5 e 2?", {'a': '12', 'b': '11', 'c': '10', 'd': '9'}, 'a'),
-        Desafio("Quanto é 60 ÷ 6?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a média de 1, 5 e 9?", {'a': '5', 'b': '6', 'c': '4', 'd': '7'}, 'a'),
-        Desafio("Quanto é 10 + 15?", {'a': '25', 'b': '24', 'c': '26', 'd': '23'}, 'a'),
-        Desafio("Qual é a soma de 1 e 1?", {'a': '2', 'b': '3', 'c': '4', 'd': '5'}, 'a'),
-        Desafio("Quanto é 100 + 0?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Qual é a média de 2, 5 e 8?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
-        Desafio("Quanto é 4 + 1?", {'a': '5', 'b': '4', 'c': '6', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 10 e 10?", {'a': '20', 'b': '21', 'c': '22', 'd': '19'}, 'a'),
-        Desafio("Qual é a diferença entre 7 e 2?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
-        Desafio("Quanto é 8 ÷ 2?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Qual é a soma de 30 e 30?", {'a': '60', 'b': '61', 'c': '62', 'd': '63'}, 'a'),
-        Desafio("Quanto é 100 - 10?", {'a': '90', 'b': '89', 'c': '88', 'd': '91'}, 'a'),
-        Desafio("Qual é a média de 0, 10 e 20?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a soma de 3 e 7?", {'a': '10', 'b': '9', 'c': '8', 'd': '11'}, 'a'),
-        Desafio("Qual é a diferença entre 50 e 25?", {'a': '25', 'b': '20', 'c': '30', 'd': '35'}, 'a'),
-        Desafio("Qual é a soma de 2 e 9?", {'a': '11', 'b': '12', 'c': '10', 'd': '13'}, 'a'),
-        Desafio("Quanto é 5 x 5?", {'a': '25', 'b': '24', 'c': '26', 'd': '23'}, 'a'),
-        Desafio("Qual é a média de 10, 5 e 15?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a soma de 17 e 3?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 75 - 25?", {'a': '50', 'b': '51', 'c': '49', 'd': '48'}, 'a'),
-        Desafio("Qual é a soma de 11 e 9?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Qual é a soma de 22 e 18?", {'a': '40', 'b': '41', 'c': '39', 'd': '38'}, 'a'),
-        Desafio("Qual é a média de 6, 9 e 12?", {'a': '9', 'b': '10', 'c': '8', 'd': '7'}, 'a'),
-        Desafio("Qual é a soma de 50 e 30?", {'a': '80', 'b': '81', 'c': '82', 'd': '79'}, 'a'),
-        Desafio("Quanto é 4 x 4?", {'a': '16', 'b': '15', 'c': '14', 'd': '13'}, 'a'),
-        Desafio("Qual é a média de 5, 5 e 5?", {'a': '5', 'b': '4', 'c': '6', 'd': '7'}, 'a'),
-        Desafio("Quanto é 90 ÷ 10?", {'a': '9', 'b': '8', 'c': '10', 'd': '11'}, 'a'),
-        Desafio("Qual é a soma de 99 e 1?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Quanto é 7 + 2?", {'a': '9', 'b': '10', 'c': '8', 'd': '11'}, 'a'),
-        Desafio("Qual é a diferença entre 100 e 99?", {'a': '1', 'b': '0', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Quanto é 60 + 15?", {'a': '75', 'b': '74', 'c': '76', 'd': '77'}, 'a'),
-        Desafio("Qual é a média de 2, 3 e 4?", {'a': '3', 'b': '4', 'c': '2', 'd': '1'}, 'a'),
-        Desafio("Qual é a soma de 1 e 2?", {'a': '3', 'b': '4', 'c': '2', 'd': '5'}, 'a'),
-        Desafio("Qual é a média de 7, 9 e 11?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Qual é a soma de 40 e 60?", {'a': '100', 'b': '101', 'c': '102', 'd': '99'}, 'a'),
-        Desafio("Quanto é 3 + 2?", {'a': '5', 'b': '4', 'c': '6', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 99 e 0?", {'a': '99', 'b': '100', 'c': '98', 'd': '97'}, 'a'),
-        Desafio("Quanto é 40 ÷ 8?", {'a': '5', 'b': '4', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Qual é a média de 1, 2 e 3?", {'a': '2', 'b': '1', 'c': '3', 'd': '4'}, 'a'),
-        Desafio("Qual é a soma de 21 e 19?", {'a': '40', 'b': '41', 'c': '39', 'd': '42'}, 'a'),
-        Desafio("Quanto é 80 - 20?", {'a': '60', 'b': '70', 'c': '50', 'd': '40'}, 'a'),
-        Desafio("Qual é a soma de 4, 4 e 4?", {'a': '12', 'b': '11', 'c': '10', 'd': '13'}, 'a'),
-        Desafio("Quanto é 45 ÷ 5?", {'a': '9', 'b': '8', 'c': '7', 'd': '10'}, 'a'),
-        Desafio("Qual é a média de 3, 3 e 3?", {'a': '3', 'b': '2', 'c': '4', 'd': '1'}, 'a'),
-        Desafio("Quanto é 10 x 10?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Qual é a soma de 6 e 7?", {'a': '13', 'b': '12', 'c': '14', 'd': '15'}, 'a'),
-        Desafio("Qual é a soma de 20 e 25?", {'a': '45', 'b': '44', 'c': '46', 'd': '47'}, 'a'),
-        Desafio("Quanto é 8 x 8?", {'a': '64', 'b': '63', 'c': '62', 'd': '61'}, 'a'),
-        Desafio("Qual é a média de 4, 8 e 12?", {'a': '8', 'b': '9', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Quanto é 99 - 1?", {'a': '98', 'b': '99', 'c': '97', 'd': '96'}, 'a'),
-        Desafio("Qual é a soma de 1 e 8?", {'a': '9', 'b': '10', 'c': '8', 'd': '7'}, 'a'),
-        Desafio("Quanto é 7 x 3?", {'a': '21', 'b': '22', 'c': '20', 'd': '19'}, 'a'),
-        Desafio("Qual é a soma de 6 e 3?", {'a': '9', 'b': '10', 'c': '8', 'd': '7'}, 'a'),
-        Desafio("Quanto é 55 ÷ 5?", {'a': '11', 'b': '10', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a média de 20, 20 e 20?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 60 + 30?", {'a': '90', 'b': '91', 'c': '89', 'd': '92'}, 'a'),
-        Desafio("Qual é a soma de 14 e 6?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 3 ÷ 3?", {'a': '1', 'b': '0', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 16 e 4?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 5 - 3?", {'a': '2', 'b': '3', 'c': '1', 'd': '4'}, 'a'),
-        Desafio("Qual é a média de 6, 10 e 14?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a soma de 8 e 5?", {'a': '13', 'b': '14', 'c': '15', 'd': '12'}, 'a'),
-        Desafio("Quanto é 45 - 20?", {'a': '25', 'b': '24', 'c': '26', 'd': '23'}, 'a'),
-        Desafio("Qual é a soma de 12 e 8?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Quanto é 4 + 4?", {'a': '8', 'b': '7', 'c': '6', 'd': '5'}, 'a'),
-        Desafio("Qual é a soma de 0 e 0?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Quanto é 50 ÷ 10?", {'a': '5', 'b': '6', 'c': '7', 'd': '4'}, 'a'),
-        Desafio("Qual é a média de 3, 3 e 3?", {'a': '3', 'b': '4', 'c': '2', 'd': '1'}, 'a'),
-        Desafio("Quanto é 75 + 25?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Qual é a soma de 10 e 20?", {'a': '30', 'b': '31', 'c': '29', 'd': '28'}, 'a'),
-        Desafio("Quanto é 24 - 9?", {'a': '15', 'b': '14', 'c': '16', 'd': '17'}, 'a'),
-        Desafio("Qual é a média de 12, 12 e 12?", {'a': '12', 'b': '13', 'c': '11', 'd': '10'}, 'a'),
-        Desafio("Quanto é 7 x 7?", {'a': '49', 'b': '50', 'c': '48', 'd': '51'}, 'a'),
-        Desafio("Qual é a soma de 5 e 4?", {'a': '9', 'b': '8', 'c': '7', 'd': '6'}, 'a'),
-        Desafio("Quanto é 90 ÷ 30?", {'a': '3', 'b': '4', 'c': '2', 'd': '5'}, 'a'),
-        Desafio("Qual é a soma de 20 e 30?", {'a': '50', 'b': '51', 'c': '49', 'd': '48'}, 'a'),
-        Desafio("Quanto é 100 + 100?", {'a': '200', 'b': '199', 'c': '201', 'd': '202'}, 'a'),
-        Desafio("Qual é a média de 9, 10 e 11?", {'a': '10', 'b': '9', 'c': '11', 'd': '8'}, 'a'),
-        Desafio("Quanto é 10 ÷ 2?", {'a': '5', 'b': '6', 'c': '7', 'd': '4'}, 'a'),
-        Desafio("Qual é a soma de 35 e 5?", {'a': '40', 'b': '39', 'c': '41', 'd': '38'}, 'a'),
-        Desafio("Quanto é 15 ÷ 3?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 14 e 5?", {'a': '19', 'b': '18', 'c': '20', 'd': '17'}, 'a'),
-        Desafio("Quanto é 10 x 3?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Qual é a média de 7, 8 e 9?", {'a': '8', 'b': '9', 'c': '7', 'd': '10'}, 'a'),
-        Desafio("Quanto é 80 ÷ 4?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Qual é a soma de 10 e 30?", {'a': '40', 'b': '41', 'c': '39', 'd': '38'}, 'a'),
-        Desafio("Quanto é 4 x 5?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Qual é a soma de 2 e 7?", {'a': '9', 'b': '8', 'c': '10', 'd': '11'}, 'a'),
-        Desafio("Quanto é 3 - 1?", {'a': '2', 'b': '3', 'c': '1', 'd': '4'}, 'a'),
-        Desafio("Qual é a média de 8, 8 e 8?", {'a': '8', 'b': '7', 'c': '9', 'd': '6'}, 'a'),
-        Desafio("Quanto é 100 ÷ 5?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Qual é a soma de 5 e 1?", {'a': '6', 'b': '7', 'c': '5', 'd': '4'}, 'a'),
-        Desafio("Quanto é 50 - 10?", {'a': '40', 'b': '30', 'c': '50', 'd': '20'}, 'a'),
-        Desafio("Qual é a soma de 13 e 7?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Quanto é 60 ÷ 3?", {'a': '20', 'b': '21', 'c': '19', 'd': '22'}, 'a'),
-        Desafio("Qual é a média de 1, 1 e 1?", {'a': '1', 'b': '2', 'c': '3', 'd': '0'}, 'a'),
-        Desafio("Qual é a soma de 10 e 40?", {'a': '50', 'b': '49', 'c': '48', 'd': '51'}, 'a'),
-        Desafio("Quanto é 100 - 0?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Qual é a soma de 15 e 5?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Quanto é 7 - 5?", {'a': '2', 'b': '1', 'c': '3', 'd': '0'}, 'a'),
-        Desafio("Qual é a média de 4, 4 e 4?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Qual é a soma de 11 e 8?", {'a': '19', 'b': '20', 'c': '18', 'd': '17'}, 'a'),
-        Desafio("Quanto é 70 - 30?", {'a': '40', 'b': '41', 'c': '39', 'd': '38'}, 'a'),
-        Desafio("Qual é a soma de 8 e 12?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Quanto é 3 x 3?", {'a': '9', 'b': '8', 'c': '10', 'd': '11'}, 'a'),
-        Desafio("Qual é a média de 15, 15 e 15?", {'a': '15', 'b': '14', 'c': '16', 'd': '13'}, 'a'),
-        Desafio("Quanto é 10 - 10?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 18 e 2?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Quanto é 30 ÷ 5?", {'a': '6', 'b': '7', 'c': '5', 'd': '4'}, 'a'),
-        Desafio("Qual é a média de 5, 5 e 10?", {'a': '6', 'b': '7', 'c': '5', 'd': '8'}, 'a'),
-        Desafio("Quanto é 90 - 50?", {'a': '40', 'b': '41', 'c': '39', 'd': '38'}, 'a'),
-        Desafio("Qual é a soma de 1 e 9?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 5 x 6?", {'a': '30', 'b': '31', 'c': '29', 'd': '28'}, 'a'),
-        Desafio("Qual é a média de 2, 2 e 2?", {'a': '2', 'b': '1', 'c': '3', 'd': '4'}, 'a'),
-        Desafio("Qual é a soma de 25 e 25?", {'a': '50', 'b': '51', 'c': '49', 'd': '48'}, 'a'),
-        Desafio("Quanto é 12 - 4?", {'a': '8', 'b': '7', 'c': '9', 'd': '6'}, 'a'),
-        Desafio("Qual é a soma de 50 e 50?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Quanto é 15 + 5?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Qual é a média de 8, 8 e 8?", {'a': '8', 'b': '9', 'c': '7', 'd': '6'}, 'a'),
-        Desafio("Quanto é 1 + 1?", {'a': '2', 'b': '3', 'c': '4', 'd': '5'}, 'a'),
         Desafio("Qual é a soma de 90 e 10?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
         Desafio("Quanto é 100 ÷ 2?", {'a': '50', 'b': '51', 'c': '49', 'd': '48'}, 'a'),
         Desafio("Qual é a média de 4, 6 e 8?", {'a': '6', 'b': '7', 'c': '5', 'd': '4'}, 'a'),
@@ -204,335 +48,122 @@ def jogar():
         Desafio("Quanto é 6 x 6?", {'a': '36', 'b': '35', 'c': '34', 'd': '33'}, 'a'),
         Desafio("Qual é a soma de 9 e 10?", {'a': '19', 'b': '20', 'c': '18', 'd': '17'}, 'a'),
         Desafio("Quanto é 10 - 5?", {'a': '5', 'b': '4', 'c': '6', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 20 e 40?", {'a': '60', 'b': '59', 'c': '61', 'd': '62'}, 'a'),
-        Desafio("Quanto é 48 ÷ 6?", {'a': '8', 'b': '7', 'c': '9', 'd': '6'}, 'a'),
-        Desafio("Qual é a média de 5, 5 e 5?", {'a': '5', 'b': '4', 'c': '6', 'd': '7'}, 'a'),
-        Desafio("Quanto é 32 - 12?", {'a': '20', 'b': '21', 'c': '22', 'd': '19'}, 'a'),
-        Desafio("Qual é a soma de 12 e 12?", {'a': '24', 'b': '23', 'c': '25', 'd': '26'}, 'a'),
-        Desafio("Quanto é 9 + 9?", {'a': '18', 'b': '17', 'c': '16', 'd': '15'}, 'a'),
-        Desafio("Qual é a soma de 19 e 1?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Quanto é 6 - 2?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Qual é a média de 10, 20 e 30?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Quanto é 6 + 6?", {'a': '12', 'b': '11', 'c': '10', 'd': '9'}, 'a'),
-        Desafio("Qual é a soma de 5 e 5?", {'a': '10', 'b': '9', 'c': '8', 'd': '7'}, 'a'),
-        Desafio("Quanto é 12 ÷ 3?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Qual é a soma de 15 e 3?", {'a': '18', 'b': '19', 'c': '17', 'd': '16'}, 'a'),
-        Desafio("Quanto é 100 - 50?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Qual é a média de 2, 3 e 4?", {'a': '3', 'b': '2', 'c': '4', 'd': '1'}, 'a'),
-        Desafio("Quanto é 11 - 7?", {'a': '4', 'b': '3', 'c': '5', 'd': '2'}, 'a'),
-        Desafio("Qual é a soma de 22 e 8?", {'a': '30', 'b': '29', 'c': '31', 'd': '28'}, 'a'),
-        Desafio("Quanto é 14 + 6?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Qual é a soma de 10 e 10?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Quanto é 8 - 4?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Qual é a média de 1, 2 e 3?", {'a': '2', 'b': '3', 'c': '1', 'd': '4'}, 'a'),
-        Desafio("Quanto é 12 + 12?", {'a': '24', 'b': '23', 'c': '25', 'd': '26'}, 'a'),
-        Desafio("Qual é a soma de 1 e 10?", {'a': '11', 'b': '10', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Quanto é 100 + 0?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Qual é a média de 6, 6 e 6?", {'a': '6', 'b': '5', 'c': '7', 'd': '4'}, 'a'),
-        Desafio("Quanto é 40 + 10?", {'a': '50', 'b': '51', 'c': '49', 'd': '48'}, 'a'),
-        Desafio("Qual é a soma de 2 e 3?", {'a': '5', 'b': '4', 'c': '6', 'd': '3'}, 'a'),
-        Desafio("Quanto é 90 + 10?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Qual é a soma de 8 e 9?", {'a': '17', 'b': '16', 'c': '18', 'd': '15'}, 'a'),
-        Desafio("Quanto é 5 + 5?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Qual é a média de 3, 4 e 5?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Quanto é 10 + 20?", {'a': '30', 'b': '29', 'c': '31', 'd': '28'}, 'a'),
-        Desafio("Qual é a soma de 3 e 7?", {'a': '10', 'b': '9', 'c': '11', 'd': '8'}, 'a'),
-        Desafio("Quanto é 5 + 15?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Qual é a soma de 6 e 6?", {'a': '12', 'b': '11', 'c': '10', 'd': '9'}, 'a'),
-        Desafio("Quanto é 30 + 10?", {'a': '40', 'b': '41', 'c': '39', 'd': '38'}, 'a'),
-        Desafio("Qual é a média de 7, 9 e 11?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Quanto é 100 - 1?", {'a': '99', 'b': '98', 'c': '100', 'd': '97'}, 'a'),
-        Desafio("Qual é a soma de 0 e 1?", {'a': '1', 'b': '2', 'c': '3', 'd': '0'}, 'a'),
-        Desafio("Quanto é 12 + 8?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Qual é a soma de 15 e 5?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Quanto é 3 + 4?", {'a': '7', 'b': '8', 'c': '6', 'd': '5'}, 'a'),
-        Desafio("Qual é a média de 10, 10 e 10?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 70 + 30?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Qual é a soma de 3 e 3?", {'a': '6', 'b': '7', 'c': '5', 'd': '4'}, 'a'),
-        Desafio("Quanto é 7 + 7?", {'a': '14', 'b': '13', 'c': '15', 'd': '16'}, 'a'),
-        Desafio("Qual é a média de 1, 2 e 1?", {'a': '1', 'b': '2', 'c': '3', 'd': '4'}, 'a'),
-        Desafio("Quanto é 5 - 5?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 21 e 9?", {'a': '30', 'b': '29', 'c': '31', 'd': '28'}, 'a'),
-        Desafio("Quanto é 60 + 40?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Qual é a soma de 10 e 1?", {'a': '11', 'b': '12', 'c': '10', 'd': '9'}, 'a'),
-        Desafio("Quanto é 10 - 7?", {'a': '3', 'b': '2', 'c': '4', 'd': '1'}, 'a'),
-        Desafio("Qual é a média de 20, 30 e 40?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Quanto é 50 + 50?", {'a': '100', 'b': '101', 'c': '99', 'd': '102'}, 'a'),
-        Desafio("Qual é a soma de 4 e 6?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 50 + 25?", {'a': '75', 'b': '74', 'c': '76', 'd': '77'}, 'a'),
-        Desafio("Qual é a média de 5, 10 e 15?", {'a': '10', 'b': '9', 'c': '11', 'd': '8'}, 'a'),
-        Desafio("Quanto é 15 - 5?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a soma de 1 e 2?", {'a': '3', 'b': '4', 'c': '5', 'd': '2'}, 'a'),
-        Desafio("Quanto é 25 + 25?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Qual é a soma de 40 e 10?", {'a': '50', 'b': '51', 'c': '49', 'd': '48'}, 'a'),
-        Desafio("Quanto é 10 ÷ 2?", {'a': '5', 'b': '4', 'c': '6', 'd': '7'}, 'a'),
-        Desafio("Qual é a média de 4, 8 e 12?", {'a': '8', 'b': '9', 'c': '7', 'd': '6'}, 'a'),
-        Desafio("Quanto é 20 - 10?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a soma de 0 e 100?", {'a': '100', 'b': '101', 'c': '99', 'd': '98'}, 'a'),
-        Desafio("Quanto é 3 + 6?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Qual é a média de 2, 2 e 2?", {'a': '2', 'b': '1', 'c': '3', 'd': '4'}, 'a'),
-        Desafio("Quanto é 40 + 20?", {'a': '60', 'b': '59', 'c': '61', 'd': '62'}, 'a'),
-        Desafio("Qual é a soma de 100 e 0?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Quanto é 12 - 3?", {'a': '9', 'b': '8', 'c': '7', 'd': '6'}, 'a'),
-        Desafio("Qual é a soma de 6 e 4?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 4 x 5?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Qual é a soma de 9 e 5?", {'a': '14', 'b': '15', 'c': '13', 'd': '12'}, 'a'),
-        Desafio("Quanto é 80 - 30?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Qual é a média de 1, 3 e 5?", {'a': '3', 'b': '2', 'c': '4', 'd': '5'}, 'a'),
-        Desafio("Quanto é 70 - 50?", {'a': '20', 'b': '21', 'c': '19', 'd': '22'}, 'a'),
-        Desafio("Qual é a soma de 30 e 20?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Quanto é 90 - 30?", {'a': '60', 'b': '59', 'c': '61', 'd': '62'}, 'a'),
-        Desafio("Qual é a soma de 7 e 3?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 6 + 4?", {'a': '10', 'b': '9', 'c': '8', 'd': '7'}, 'a'),
-        Desafio("Qual é a média de 9, 10 e 11?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 100 ÷ 4?", {'a': '25', 'b': '24', 'c': '26', 'd': '27'}, 'a'),
-        Desafio("Qual é a soma de 3 e 5?", {'a': '8', 'b': '7', 'c': '9', 'd': '10'}, 'a'),
-        Desafio("Quanto é 45 - 15?", {'a': '30', 'b': '31', 'c': '29', 'd': '32'}, 'a'),
-        Desafio("Qual é a soma de 20 e 5?", {'a': '25', 'b': '24', 'c': '26', 'd': '27'}, 'a'),
-        Desafio("Quanto é 60 - 30?", {'a': '30', 'b': '31', 'c': '29', 'd': '32'}, 'a'),
-        Desafio("Qual é a média de 10, 20 e 30?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Quanto é 5 + 3?", {'a': '8', 'b': '9', 'c': '7', 'd': '6'}, 'a'),
-        Desafio("Qual é a soma de 1 e 1?", {'a': '2', 'b': '3', 'c': '4', 'd': '1'}, 'a'),
-        Desafio("Quanto é 25 - 5?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Qual é a soma de 15 e 5?", {'a': '20', 'b': '19', 'c': '21', 'd': '18'}, 'a'),
-        Desafio("Quanto é 4 + 6?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Qual é a média de 6, 7 e 8?", {'a': '7', 'b': '8', 'c': '6', 'd': '5'}, 'a'),
-        Desafio("Quanto é 4 + 4?", {'a': '8', 'b': '9', 'c': '7', 'd': '6'}, 'a'),
-        Desafio("Qual é a soma de 50 e 25?", {'a': '75', 'b': '74', 'c': '76', 'd': '77'}, 'a'),
-        Desafio("Quanto é 7 x 7?", {'a': '49', 'b': '48', 'c': '50', 'd': '51'}, 'a'),
-        Desafio("Qual é a média de 1, 2 e 1?", {'a': '1', 'b': '2', 'c': '3', 'd': '4'}, 'a'),
-        Desafio("Quanto é 10 + 10?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Qual é a soma de 13 e 6?", {'a': '19', 'b': '20', 'c': '18', 'd': '17'}, 'a'),
-        Desafio("Quanto é 90 ÷ 3?", {'a': '30', 'b': '31', 'c': '29', 'd': '28'}, 'a'),
-        Desafio("Qual é a soma de 25 e 15?", {'a': '40', 'b': '41', 'c': '39', 'd': '38'}, 'a'),
-        Desafio("Quanto é 10 + 5?", {'a': '15', 'b': '14', 'c': '16', 'd': '17'}, 'a'),
-        Desafio("Qual é a soma de 100 e 0?", {'a': '100', 'b': '99', 'c': '101', 'd': '102'}, 'a'),
-        Desafio("Quanto é 90 + 10?", {'a': '100', 'b': '101', 'c': '99', 'd': '98'}, 'a'),
-        Desafio("Qual é a soma de 5 e 5?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 10 - 2?", {'a': '8', 'b': '9', 'c': '7', 'd': '6'}, 'a'),
-        Desafio("Qual é a média de 1, 1 e 1?", {'a': '1', 'b': '2', 'c': '3', 'd': '4'}, 'a'),
-        Desafio("Quanto é 30 - 20?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a soma de 1 e 3?", {'a': '4', 'b': '3', 'c': '5', 'd': '2'}, 'a'),
-        Desafio("Quanto é 12 - 4?", {'a': '8', 'b': '7', 'c': '6', 'd': '9'}, 'a'),
-        Desafio("Qual é a soma de 8 e 2?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 10 + 1?", {'a': '11', 'b': '10', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a média de 20, 30 e 40?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Quanto é 60 ÷ 2?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Qual é a soma de 70 e 10?", {'a': '80', 'b': '79', 'c': '81', 'd': '82'}, 'a'),
-        Desafio("Quanto é 80 - 20?", {'a': '60', 'b': '61', 'c': '59', 'd': '62'}, 'a'),
-        Desafio("Qual é a soma de 90 e 9?", {'a': '99', 'b': '98', 'c': '100', 'd': '97'}, 'a'),
-        Desafio("Quanto é 50 - 25?", {'a': '25', 'b': '26', 'c': '24', 'd': '23'}, 'a'),
-        Desafio("Qual é a média de 3, 6 e 9?", {'a': '6', 'b': '5', 'c': '7', 'd': '8'}, 'a'),
-        Desafio("Quanto é 5 - 3?", {'a': '2', 'b': '1', 'c': '3', 'd': '4'}, 'a'),
-        Desafio("Qual é a soma de 1 e 9?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Quanto é 25 ÷ 5?", {'a': '5', 'b': '4', 'c': '6', 'd': '7'}, 'a'),
-        Desafio("Qual é a soma de 2 e 2?", {'a': '4', 'b': '3', 'c': '5', 'd': '6'}, 'a'),
-        Desafio("Quanto é 40 - 20?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Qual é a média de 5, 5 e 5?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
-        Desafio("Quanto é 100 - 10?", {'a': '90', 'b': '91', 'c': '89', 'd': '92'}, 'a'),
-        Desafio("Qual é a soma de 4 e 5?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Quanto é 100 ÷ 2?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Qual é a soma de 12 e 12?", {'a': '24', 'b': '23', 'c': '25', 'd': '26'}, 'a'),
-        Desafio("Quanto é 75 + 25?", {'a': '100', 'b': '101', 'c': '99', 'd': '98'}, 'a'),
-        Desafio("Qual é a média de 2, 2 e 2?", {'a': '2', 'b': '3', 'c': '1', 'd': '4'}, 'a'),
-        Desafio("Quanto é 100 - 25?", {'a': '75', 'b': '76', 'c': '74', 'd': '73'}, 'a'),
-        Desafio("Qual é a soma de 11 e 9?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 9 + 1?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Qual é a média de 3, 5 e 7?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
-        Desafio("Quanto é 100 + 1?", {'a': '101', 'b': '100', 'c': '102', 'd': '99'}, 'a'),
-        Desafio("Qual é a soma de 2 e 3?", {'a': '5', 'b': '4', 'c': '6', 'd': '3'}, 'a'),
-        Desafio("Quanto é 70 - 10?", {'a': '60', 'b': '61', 'c': '59', 'd': '58'}, 'a'),
-        Desafio("Qual é a média de 4, 4 e 4?", {'a': '4', 'b': '3', 'c': '5', 'd': '2'}, 'a'),
-        Desafio("Quanto é 100 ÷ 5?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Qual é a soma de 100 e 1?", {'a': '101', 'b': '100', 'c': '102', 'd': '99'}, 'a'),
-        Desafio("Quanto é 25 - 15?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a soma de 4 e 7?", {'a': '11', 'b': '10', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Quanto é 6 x 6?", {'a': '36', 'b': '35', 'c': '34', 'd': '33'}, 'a'),
-        Desafio("Qual é a média de 10, 10 e 10?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 5 + 2?", {'a': '7', 'b': '8', 'c': '6', 'd': '5'}, 'a'),
-        Desafio("Qual é a soma de 12 e 8?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 100 + 100?", {'a': '200', 'b': '199', 'c': '201', 'd': '202'}, 'a'),
-        Desafio("Qual é a média de 8, 9 e 10?", {'a': '9', 'b': '8', 'c': '10', 'd': '11'}, 'a'),
-        Desafio("Quanto é 60 - 30?", {'a': '30', 'b': '31', 'c': '29', 'd': '28'}, 'a'),
-        Desafio("Qual é a soma de 2 e 5?", {'a': '7', 'b': '6', 'c': '8', 'd': '9'}, 'a'),
-        Desafio("Quanto é 30 ÷ 3?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a soma de 100 e 100?", {'a': '200', 'b': '199', 'c': '201', 'd': '202'}, 'a'),
-        Desafio("Quanto é 20 + 5?", {'a': '25', 'b': '24', 'c': '26', 'd': '27'}, 'a'),
-        Desafio("Qual é a média de 2, 3 e 4?", {'a': '3', 'b': '4', 'c': '5', 'd': '2'}, 'a'),
-        Desafio("Quanto é 15 + 5?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Qual é a soma de 3 e 6?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Quanto é 30 - 10?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Qual é a média de 5, 5 e 5?", {'a': '5', 'b': '4', 'c': '6', 'd': '7'}, 'a'),
-        Desafio("Quanto é 90 + 10?", {'a': '100', 'b': '101', 'c': '99', 'd': '98'}, 'a'),
-        Desafio("Qual é a soma de 8 e 1?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Quanto é 10 - 4?", {'a': '6', 'b': '5', 'c': '7', 'd': '8'}, 'a'),
-        Desafio("Qual é a média de 4, 4 e 4?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Quanto é 50 ÷ 10?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
-        Desafio("Qual é a soma de 6 e 5?", {'a': '11', 'b': '10', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Quanto é 9 - 1?", {'a': '8', 'b': '7', 'c': '6', 'd': '5'}, 'a'),
-        Desafio("Qual é a média de 10, 10 e 10?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Quanto é 20 + 10?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Qual é a soma de 14 e 6?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 80 ÷ 8?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a média de 12, 12 e 12?", {'a': '12', 'b': '11', 'c': '13', 'd': '10'}, 'a'),
-        Desafio("Quanto é 10 - 6?", {'a': '4', 'b': '5', 'c': '3', 'd': '2'}, 'a'),
-        Desafio("Qual é a soma de 3 e 7?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Quanto é 100 + 50?", {'a': '150', 'b': '149', 'c': '151', 'd': '152'}, 'a'),
-        Desafio("Qual é a média de 0, 0 e 0?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Quanto é 30 - 10?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Qual é a soma de 15 e 15?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Quanto é 6 + 3?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Qual é a média de 4, 5 e 6?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
-        Desafio("Quanto é 50 + 50?", {'a': '100', 'b': '101', 'c': '99', 'd': '98'}, 'a'),
-        Desafio("Qual é a soma de 20 e 20?", {'a': '40', 'b': '39', 'c': '41', 'd': '42'}, 'a'),
-        Desafio("Quanto é 25 + 5?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Qual é a média de 7, 8 e 9?", {'a': '8', 'b': '9', 'c': '7', 'd': '6'}, 'a'),
-        Desafio("Quanto é 75 - 25?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Qual é a soma de 16 e 4?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 100 - 20?", {'a': '80', 'b': '79', 'c': '81', 'd': '82'}, 'a'),
-        Desafio("Qual é a média de 8, 8 e 8?", {'a': '8', 'b': '7', 'c': '9', 'd': '6'}, 'a'),
-        Desafio("Quanto é 60 + 30?", {'a': '90', 'b': '89', 'c': '91', 'd': '92'}, 'a'),
-        Desafio("Qual é a soma de 5 e 4?", {'a': '9', 'b': '8', 'c': '10', 'd': '7'}, 'a'),
-        Desafio("Quanto é 10 x 3?", {'a': '30', 'b': '31', 'c': '29', 'd': '28'}, 'a'),
-        Desafio("Qual é a média de 2, 5 e 8?", {'a': '5', 'b': '6', 'c': '4', 'd': '3'}, 'a'),
-        Desafio("Quanto é 30 + 20?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Qual é a soma de 6 e 6?", {'a': '12', 'b': '11', 'c': '10', 'd': '9'}, 'a'),
-        Desafio("Quanto é 90 - 60?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Qual é a média de 1, 1 e 1?", {'a': '1', 'b': '0', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Quanto é 40 + 40?", {'a': '80', 'b': '79', 'c': '81', 'd': '82'}, 'a'),
-        Desafio("Qual é a soma de 3 e 3?", {'a': '6', 'b': '5', 'c': '7', 'd': '4'}, 'a'),
-        Desafio("Quanto é 20 - 10?", {'a': '10', 'b': '11', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Qual é a média de 3, 3 e 3?", {'a': '3', 'b': '2', 'c': '4', 'd': '1'}, 'a'),
-        Desafio("Quanto é 35 - 15?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Qual é a soma de 5 e 5?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 100 + 10?", {'a': '110', 'b': '109', 'c': '111', 'd': '112'}, 'a'),
-        Desafio("Qual é a média de 1, 2 e 3?", {'a': '2', 'b': '3', 'c': '1', 'd': '4'}, 'a'),
-        Desafio("Quanto é 50 + 25?", {'a': '75', 'b': '74', 'c': '76', 'd': '77'}, 'a'),
-        Desafio("Qual é a soma de 12 e 3?", {'a': '15', 'b': '16', 'c': '14', 'd': '13'}, 'a'),
-        Desafio("Quanto é 45 + 5?", {'a': '50', 'b': '49', 'c': '51', 'd': '48'}, 'a'),
-        Desafio("Qual é a média de 5, 6 e 7?", {'a': '6', 'b': '7', 'c': '5', 'd': '4'}, 'a'),
-        Desafio("Quanto é 80 - 40?", {'a': '40', 'b': '39', 'c': '41', 'd': '42'}, 'a'),
-        Desafio("Qual é a soma de 7 e 8?", {'a': '15', 'b': '14', 'c': '16', 'd': '13'}, 'a'),
-        Desafio("Quanto é 60 - 20?", {'a': '40', 'b': '39', 'c': '41', 'd': '42'}, 'a'),
-        Desafio("Qual é a média de 9, 9 e 9?", {'a': '9', 'b': '8', 'c': '10', 'd': '11'}, 'a'),
-        Desafio("Quanto é 25 + 25?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Qual é a soma de 18 e 2?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Quanto é 40 ÷ 4?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a média de 11, 11 e 11?", {'a': '11', 'b': '10', 'c': '12', 'd': '9'}, 'a'),
-        Desafio("Quanto é 60 ÷ 3?", {'a': '20', 'b': '21', 'c': '19', 'd': '22'}, 'a'),
-        Desafio("Qual é a soma de 17 e 3?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Quanto é 25 - 10?", {'a': '15', 'b': '14', 'c': '16', 'd': '13'}, 'a'),
-        Desafio("Qual é a média de 6, 6 e 6?", {'a': '6', 'b': '5', 'c': '7', 'd': '8'}, 'a'),
-        Desafio("Quanto é 100 - 75?", {'a': '25', 'b': '24', 'c': '26', 'd': '27'}, 'a'),
-        Desafio("Qual é a soma de 50 e 25?", {'a': '75', 'b': '76', 'c': '74', 'd': '73'}, 'a'),
-        Desafio("Quanto é 10 + 10?", {'a': '20', 'b': '21', 'c': '19', 'd': '18'}, 'a'),
-        Desafio("Qual é a média de 1, 2 e 2?", {'a': '1', 'b': '2', 'c': '3', 'd': '0'}, 'a'),
-        Desafio("Quanto é 75 + 15?", {'a': '90', 'b': '89', 'c': '91', 'd': '88'}, 'a'),
-        Desafio("Qual é a soma de 100 e 50?", {'a': '150', 'b': '149', 'c': '151', 'd': '152'}, 'a'),
-        Desafio("Quanto é 60 + 20?", {'a': '80', 'b': '81', 'c': '79', 'd': '78'}, 'a'),
-        Desafio("Qual é a média de 15, 15 e 15?", {'a': '15', 'b': '14', 'c': '16', 'd': '13'}, 'a'),
-        Desafio("Quanto é 50 + 75?", {'a': '125', 'b': '124', 'c': '126', 'd': '127'}, 'a'),
-        Desafio("Qual é a soma de 0 e 0?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Quanto é 10 ÷ 2?", {'a': '5', 'b': '4', 'c': '6', 'd': '7'}, 'a'),
-        Desafio("Qual é a média de 20, 30 e 40?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
-        Desafio("Quanto é 30 + 30?", {'a': '60', 'b': '61', 'c': '59', 'd': '62'}, 'a'),
-        Desafio("Qual é a soma de 1 e 1?", {'a': '2', 'b': '3', 'c': '1', 'd': '4'}, 'a'),
-        Desafio("Quanto é 70 ÷ 7?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a média de 2, 4 e 6?", {'a': '4', 'b': '3', 'c': '5', 'd': '6'}, 'a'),
-        Desafio("Quanto é 45 - 5?", {'a': '40', 'b': '41', 'c': '39', 'd': '38'}, 'a'),
-        Desafio("Qual é a soma de 19 e 1?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Quanto é 50 - 25?", {'a': '25', 'b': '26', 'c': '24', 'd': '23'}, 'a'),
-        Desafio("Qual é a média de 7, 7 e 7?", {'a': '7', 'b': '8', 'c': '6', 'd': '5'}, 'a'),
-        Desafio("Quanto é 5 + 5?", {'a': '10', 'b': '9', 'c': '8', 'd': '7'}, 'a'),
-        Desafio("Qual é a soma de 10 e 10?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Quanto é 60 + 60?", {'a': '120', 'b': '121', 'c': '119', 'd': '118'}, 'a'),
-        Desafio("Qual é a média de 10, 20 e 30?", {'a': '20', 'b': '19', 'c': '21', 'd': '22'}, 'a'),
-        Desafio("Quanto é 15 - 5?", {'a': '10', 'b': '9', 'c': '11', 'd': '12'}, 'a'),
-        Desafio("Qual é a soma de 3 e 4?", {'a': '7', 'b': '6', 'c': '8', 'd': '9'}, 'a'),
-        Desafio("Quanto é 10 x 5?", {'a': '50', 'b': '49', 'c': '51', 'd': '52'}, 'a'),
-        Desafio("Qual é a média de 5, 10 e 15?", {'a': '10', 'b': '11', 'c': '9', 'd': '8'}, 'a'),
-        Desafio("Quanto é 80 - 20?", {'a': '60', 'b': '59', 'c': '61', 'd': '62'}, 'a'),
-        Desafio("Qual é a soma de 22 e 8?", {'a': '30', 'b': '29', 'c': '31', 'd': '32'}, 'a'),
+        # Adicione mais perguntas aqui...
+      ]
+
+    # Desafios de Português
+    desafios_portugues = [
+        Desafio("Qual a forma correta da palavra: 'excessão'?", {'a': 'exceção', 'b': 'excessão', 'c': 'exessão', 'd': 'excessão'}, 'a'),
+        Desafio("Qual é o sinônimo de 'feliz'?", {'a': 'triste', 'b': 'contente', 'c': 'descontente', 'd': 'irritado'}, 'b'),
+        Desafio("Qual a forma correta da palavra: 'excessão'?", {'a': 'exceção', 'b': 'excessão', 'c': 'exessão', 'd': 'excessão'}, 'a'),
+        Desafio("Qual é o sinônimo de 'feliz'?", {'a': 'triste', 'b': 'contente', 'c': 'descontente', 'd': 'irritado'}, 'b'),
+        Desafio("Como se escreve a forma correta do verbo: 'ele (verbo) os amigos'?", {'a': 'viu', 'b': 'ver', 'c': 'vi', 'd': 'vê'}, 'a'),
+        Desafio("Qual é a palavra com erro de ortografia?", {'a': 'proffessor', 'b': 'professor', 'c': 'professora', 'd': 'professores'}, 'a'),
+        Desafio("Qual é a forma correta do plural da palavra 'cidadão'?", {'a': 'cidadãos', 'b': 'cidadãs', 'c': 'cidadão', 'd': 'cidadões'}, 'a'),
+        Desafio("Qual a frase correta?", {'a': 'Eu vou à praia.', 'b': 'Eu vou a praia.', 'c': 'Eu vou a praia', 'd': 'Eu vou a praia.'}, 'a'),
+        Desafio("Qual é o antônimo de 'claro'?", {'a': 'luz', 'b': 'brilhante', 'c': 'escuro', 'd': 'transparente'}, 'c'),
+        Desafio("Qual a forma correta da conjugação do verbo 'correr' na primeira pessoa do singular?", {'a': 'corri', 'b': 'corro', 'c': 'corre', 'd': 'correr'}, 'b'),
+        Desafio("Como se chama a divisão de sílabas na palavra 'computador'?", {'a': 'hiato', 'b': 'ditongo', 'c': 'sílaba', 'd': 'diptongo'}, 'c'),
+        Desafio("Qual é a forma correta: 'fazer ele' ou 'fazer ele mesmo'?", {'a': 'fazer ele', 'b': 'fazer ele mesmo', 'c': 'fazer ele mesmo que', 'd': 'fazer ele mesma'}, 'b'),
+        Desafio("Qual das palavras é um advérbio?", {'a': 'rapidamente', 'b': 'rápido', 'c': 'rápida', 'd': 'rapidez'}, 'a'),
+        Desafio("Qual é a frase correta?", {'a': 'Ela disse que viria.', 'b': 'Ela disse que viriam.', 'c': 'Ela disse que vim.', 'd': 'Ela disse que veio.'}, 'a'),
+        Desafio("Qual é o plural da palavra 'mesa'?", {'a': 'mesas', 'b': 'mesa', 'c': 'mesas', 'd': 'mesas'}, 'a'),
+        Desafio("Qual a forma correta da frase: 'Eu tenho que (verbo) o trabalho.'?", {'a': 'fazer', 'b': 'fazendo', 'c': 'fez', 'd': 'feito'}, 'a'),
+        Desafio("Qual é o erro na frase: 'Eles gosta de música.'?", {'a': 'gosta', 'b': 'música', 'c': 'Eles', 'd': 'de'}, 'a'),
     ]
 
-    # Professores e suas vidas
+        # Adicione mais perguntas de português aqui...
+
+    # Lista de professores e suas vidas
     professores = [("Marcelo", 10), ("Patricia", 15)]
-    professor_atual = 0  # Índice do professor atual
-    professor_nome, professor_vidas = professores[professor_atual]
-
-    sherek_vidas = 3  # Vidas do jogador (Sherek)
-    partesescrituras = 0  # Pedaços da escritura que o jogador ganhou
+    professor_atual = 0
+    jogador_pos = [5, 5]
+    professor_pos = [3, 3]  # Posição do professor (exemplo)
+    sherek_vidas = 3
     running = True
-    current_question_index = 0
-
-    perguntas_aleatorias = random.sample(desafios, len(desafios))  # Seleciona perguntas aleatórias
-    current_question = perguntas_aleatorias[current_question_index]
-    pergunta, opcoes = current_question.mostrar()
 
     while running:
         # Desenha a tela
         screen.fill((255, 255, 255))
+        desenhar_mapa(jogador_pos, professor_pos)
 
-        # Mostra o nome do professor atual
-        professor_text = font.render(f"Professor: {professor_nome}", True, (255, 0, 0))
-        screen.blit(professor_text, (50, 20))
+        # Verifica se o jogador encontrou o professor
+        if jogador_pos == professor_pos:
+            desafios_aleatorios = random.sample(desafios_matematica if professor_atual == 0 else desafios_portugues, len(desafios_matematica if professor_atual == 0 else desafios_portugues))
+            current_question_index = 0
+            current_question = desafios_aleatorios[current_question_index]
+            pergunta, opcoes = current_question.mostrar()
 
-        # Mostra a pergunta
-        question_text = font.render(pergunta, True, (0, 0, 0))
-        screen.blit(question_text, (50, 50))
+            while True:  # Loop do quiz
+                screen.fill((255, 255, 255))
+                question_text = font.render(pergunta, True, (0, 0, 0))
+                screen.blit(question_text, (50, 50))
 
-        # Mostra as opções
-        for i, (letra, opcao) in enumerate(opcoes):
-            option_text = font.render(f"{letra}) {opcao}", True, (0, 0, 0))
-            screen.blit(option_text, (50, 100 + i * 40))
+                # Mostra as opções
+                for i, (letra, opcao) in enumerate(opcoes):
+                    option_text = font.render(f"{letra}) {opcao}", True, (0, 0, 0))
+                    screen.blit(option_text, (50, 100 + i * 40))
 
-        # Exibe as vidas
-        vida_sherek_text = font.render(f"Vidas do Sherek: {sherek_vidas}", True, (0, 0, 255))
-        screen.blit(vida_sherek_text, (500, 50))
+                # Exibir vidas
+                vida_professor_text = font.render(f"Vidas do {professores[professor_atual][0]}: {professores[professor_atual][1]}", True, (255, 0, 0))
+                screen.blit(vida_professor_text, (500, 50))
 
-        vida_professor_text = font.render(f"Vidas do {professor_nome}: {professor_vidas}", True, (255, 0, 0))
-        screen.blit(vida_professor_text, (500, 100))
+                pygame.display.flip()
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        return
+                    elif event.type == pygame.KEYDOWN:
+                        if event.key in [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d]:
+                            resposta = chr(event.key)
+
+                            # Verifica a resposta
+                            if resposta == current_question.resposta_certa:
+                                # Reduz uma vida do professor
+                                professores[professor_atual] = (professores[professor_atual][0], professores[professor_atual][1] - 1)
+                                print("Resposta correta!")
+                                if professores[professor_atual][1] == 0:
+                                    print(f"Você derrotou {professores[professor_atual][0]}!")
+                                    professor_atual += 1
+                                    if professor_atual >= len(professores):
+                                        print("Você derrotou todos os professores!")
+                                        return  # Fim do jogo
+                                    else:
+                                        # Transição para o próximo professor
+                                        professor_pos = [5, 5]  # Nova posição do próximo professor
+                                        jogador_pos = [5, 5]  # Reseta a posição do jogador
+                                        break  # Sai do loop do quiz
+                                current_question_index += 1
+                                if current_question_index >= len(desafios_aleatorios):
+                                    print("Você completou todas as perguntas!")
+                                    return
+                                current_question = desafios_aleatorios[current_question_index]
+                                pergunta, opcoes = current_question.mostrar()
+                            else:
+                                sherek_vidas -= 1
+                                print("Resposta errada!")
+                                if sherek_vidas == 0:
+                                    print("Game over! O Professor te reprovou!")
+                                    return
 
         pygame.display.flip()
 
-        # Checa eventos do teclado
+        # Checa eventos do teclado para movimento
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key in [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d]:
-                    resposta = chr(event.key)  # Pega a tecla pressionada
-
-                    # Verifica se a resposta está correta
-                    if resposta == current_question.resposta_certa:
-                        professor_vidas -= 1  # Reduz uma vida do Professor
-                        print("Resposta correta!")
-                        if professor_vidas == 0:
-                            partesescrituras += 1
-                            print(f"Você derrotou {professor_nome}! Ganhou uma parte da escritura! Total: {partesescrituras} partes.")
-                            
-                            professor_atual += 1  # Passa para o próximo professor
-                            if professor_atual < len(professores):
-                                professor_nome, professor_vidas = professores[professor_atual]
-                            else:
-                                print("Você derrotou todos os professores!")
-                                return
-                    else:
-                        sherek_vidas -= 1  # Reduz uma vida do Sherek
-                        print("Resposta errada!")
-                        if sherek_vidas == 0:
-                            print("Game over! O Professor te reprovou!")
-                            return
-
-                    # Vai para a próxima pergunta (mesmo após acerto ou erro)
-                    current_question_index += 1
-                    if current_question_index >= len(perguntas_aleatorias):
-                        print("Você derrotou todos os desafios! O professor desistiu!")
-                        return  # Jogo termina
-                    current_question = perguntas_aleatorias[current_question_index]
-                    pergunta, opcoes = current_question.mostrar()
+                if event.key == pygame.K_LEFT and jogador_pos[0] > 0:
+                    jogador_pos[0] -= 1
+                elif event.key == pygame.K_RIGHT and jogador_pos[0] < 19:
+                    jogador_pos[0] += 1
+                elif event.key == pygame.K_UP and jogador_pos[1] > 0:
+                    jogador_pos[1] -= 1
+                elif event.key == pygame.K_DOWN and jogador_pos[1] < 14:
+                    jogador_pos[1] += 1
 
     pygame.quit()
 
-# Iniciar o jogo
+# Iniciar o jogo
 jogar()
