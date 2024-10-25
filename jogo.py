@@ -5,16 +5,16 @@ import math, time
 
 pygame.init()
 
-font = pygame.font.Font(None, 48)
-
 tela_width = 800
 tela_height = 600
 
 tela = pygame.display.set_mode((tela_width, tela_height))
 pygame.display.set_caption("Shrek - A Volta as Aulas")
 
-pygame.mixer.music.set_volume(0.3)
-pygame.mixer.music.load('06. Snowboard Mountain Theme.mp3')
+font = pygame.font.Font(None, 48)
+
+pygame.mixer.music.set_volume(0.15)
+som_principal = pygame.mixer.music.load('06. Snowboard Mountain Theme.mp3')
 pygame.mixer.music.play(-1)
 
 som_acertos = pygame.mixer.Sound('smw_coin.wav')
@@ -23,34 +23,102 @@ som_acertos.set_volume(1)
 som_erros = pygame.mixer.Sound('smw_lemmy_wendy_incorrect.wav')
 som_erros.set_volume(1)
 
+
+    
 class Desafio:
     def __init__(self, pergunta, opcoes, resposta_correta):
         self.pergunta = pergunta
         self.opcoes = opcoes
         self.resposta_correta = resposta_correta
 
+class Button():
+	def __init__(self, image, pos, text_input, font, base_color, hovering_color):
+		self.image = image
+		self.x_pos = pos[0]
+		self.y_pos = pos[1]
+		self.font = font
+		self.base_color, self.hovering_color = base_color, hovering_color
+		self.text_input = text_input
+		self.text = self.font.render(self.text_input, True, self.base_color)
+		if self.image is None:
+			self.image = self.text
+		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
+
+	def update(self, screen):
+		if self.image is not None:
+			screen.blit(self.image, self.rect)
+		screen.blit(self.text, self.text_rect)
+
+	def checkForInput(self, position):
+		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+			return True
+		return False
+
+	def changeColor(self, position):
+		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+			self.text = self.font.render(self.text_input, True, self.hovering_color)
+		else:
+			self.text = self.font.render(self.text_input, True, self.base_color)
+               
+def get_font(size):
+    return pygame.font.Font("img/font (1).ttf", size)
+
 def tela_inicial():
     while True:
-        tela.fill([(math.sin(n + time.time()) + 1) * 127 for n in range(3)])
-        titulo = font.render("Shrek - A Volta as Aulas", True, (0, 0, 0))
-        instrucoes = font.render("Pressione Enter para jogar", True, (0, 0, 0))
+        tela.fill((0, 0, 0))
 
-        tela.blit(titulo, (130, 250))
-        tela.blit(instrucoes, (130, 300))
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        pygame.display.flip()
+        MENU_TEXTO = get_font(30).render("SHREK - BACK TO SCHOOL", True, "#2F922F")
+        MENU_RECT = MENU_TEXTO.get_rect(center=(420, 100))
+
+        BOTAO_JOGAR = Button(image=pygame.image.load("img/Play Rect.png"), pos=(394, 250), 
+                            text_input="JOGAR", font=get_font(25), base_color="#d7fcd4", hovering_color="Green")
+        BOTAO_SAIR = Button(image=pygame.image.load("img/Quit Rect.png"), pos=(394, 420), 
+                            text_input="SAIR", font=get_font(25), base_color="#d7fcd4", hovering_color="Green")
+
+        tela.blit(MENU_TEXTO, MENU_RECT)
+
+        for button in [BOTAO_JOGAR, BOTAO_SAIR]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(tela)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if BOTAO_JOGAR.checkForInput(MENU_MOUSE_POS):
+                    caixa_dialogo()
+                if BOTAO_SAIR.checkForInput(MENU_MOUSE_POS):
+                    pygame.quit()
+
+        pygame.display.update()
+
+def caixa_dialogo():
+    cenario = pygame.transform.scale(pygame.image.load("img/background.webp"), (tela_width, tela_height))
+    while True:
+        font = pygame.font.Font(None,25)
+        tela.fill((0,0,0))
+        tela.blit(cenario, (0, 0))
+        mensagem = font.render("Aperte E para pular o diálogo", True, (169,169,169))
+        tela.blit(mensagem, (30, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                exit() 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    jogo()  # Inicia o jogo
+                if event.key == K_e:
+                    jogo()
+
+        pygame.display.flip()
 
 def jogo():
-    player = pygame.Rect(100, 100, 50, 50)
-    professor_matematica = pygame.Rect(400, 100, 50, 50)
+    player = pygame.Rect(400,100, 50, 50)
+    professor_matematica = pygame.image.load("img/marcelo.png")
+    professor_matematica = pygame.transform.scale(professor_matematica, (90, 90))
+    professor_rect = professor_matematica.get_rect(topright=(tela_width, 40))
     velocidade = 0.59
 
     while True:
@@ -69,15 +137,15 @@ def jogo():
         if keys[K_DOWN]:
             player.y += velocidade
 
-        if player.colliderect(professor_matematica):
-            tela_amarela()  # Chama a tela amarela quando o player encosta no professor
+        if player.colliderect(professor_rect):
+            perguntas_mat()  # Chama as perguntas quando o player encosta no professor
 
         tela.fill((255, 235, 205))  # Limpa a tela
-        pygame.draw.rect(tela, (0, 0, 255), player)  
-        pygame.draw.rect(tela, (255, 0, 0), professor_matematica)  
+        tela.blit(professor_matematica, professor_rect.topleft) 
+        pygame.draw.rect(tela, (255, 0, 0), player)  
         pygame.display.flip()
 
-def tela_amarela():
+def perguntas_mat():
     desafios_matematica = [
         Desafio("Qual é a média de 9, 9 e 9?", {'a': '9', 'b': '10', 'c': '8', 'd': '7'}, 'a'),
         Desafio("Quanto é 70 + 20?", {'a': '90', 'b': '91', 'c': '89', 'd': '88'}, 'a'),
@@ -95,7 +163,7 @@ def tela_amarela():
     indice_desafio = 0
 
     while True:
-        tela.fill((255, 255, 0))  # Preenche a tela com amarelo
+        tela.fill((222, 255, 154))  # Preenche a tela com amarelo claro
 
         if indice_desafio >= len(desafios_matematica):
             break  # Sai do loop se todos os desafios foram respondidos
@@ -114,7 +182,7 @@ def tela_amarela():
             y_offset += 50
 
         # Renderiza as vidas
-        vidas_surface = font.render(f'Vidas: {player_vidas}', True, (0, 0, 0))
+        vidas_surface = font.render(f'Vidas: {player_vidas}', True, (255, 0, 0))
         tela.blit(vidas_surface, (650, 50))
 
         pygame.display.flip()
@@ -159,32 +227,32 @@ def tela_branca():
             player.y += velocidade
 
         if player.colliderect(professora_portugues):
-            tela_rosa()  # Chama a tela rosa ao colidir
+            perguntas_port()  # Chama as perguntas de portugues ao colidir
 
         tela.fill((255, 235, 205))  # Limpa a tela
         pygame.draw.rect(tela, (0, 0, 255), player)
         pygame.draw.rect(tela, (255, 0, 255), professora_portugues)
         pygame.display.flip()
 
-def tela_rosa():
+def perguntas_port():
     desafios_portugues = [
         Desafio("Qual a forma correta da palavra: 'excessão'?", {'a': 'exceção', 'b': 'excessão', 'c': 'exessão', 'd': 'excessão'}, 'a'),
-        Desafio("Qual é o sinônimo de 'feliz'?", {'a': 'triste', 'b': 'contente', 'c': 'descontente', 'd': 'irritado'}, 'b'),
+        Desafio("Qual é o sinônimo de 'feliz'?", {'a': 'triste', 'b': 'contente', 'c': 'descontente', 'd': 'irritado'}, 'a'),
         Desafio("Qual a forma correta da palavra: 'excessão'?", {'a': 'exceção', 'b': 'excessão', 'c': 'exessão', 'd': 'excessão'}, 'a'),
-        Desafio("Qual é o sinônimo de 'feliz'?", {'a': 'triste', 'b': 'contente', 'c': 'descontente', 'd': 'irritado'}, 'b'),
+        Desafio("Qual é o sinônimo de 'feliz'?", {'a': 'triste', 'b': 'contente', 'c': 'descontente', 'd': 'irritado'}, 'a'),
         Desafio("Como se escreve a forma correta do verbo: 'ele (verbo) os amigos'?", {'a': 'viu', 'b': 'ver', 'c': 'vi', 'd': 'vê'}, 'a'),
         Desafio("Qual é a palavra com erro de ortografia?", {'a': 'proffessor', 'b': 'professor', 'c': 'professora', 'd': 'professores'}, 'a'),
         Desafio("Qual é a forma correta do plural da palavra 'cidadão'?", {'a': 'cidadãos', 'b': 'cidadãs', 'c': 'cidadão', 'd': 'cidadões'}, 'a'),
         Desafio("Qual a frase correta?", {'a': 'Eu vou à praia.', 'b': 'Eu vou a praia.', 'c': 'Eu vou a praia', 'd': 'Eu vou a praia.'}, 'a'),
-        Desafio("Qual é o antônimo de 'claro'?", {'a': 'luz', 'b': 'brilhante', 'c': 'escuro', 'd': 'transparente'}, 'c'),
-        Desafio("Qual a forma correta da conjugação do verbo 'correr' na primeira pessoa do singular?", {'a': 'corri', 'b': 'corro', 'c': 'corre', 'd': 'correr'}, 'b'),
+        Desafio("Qual é o antônimo de 'claro'?", {'a': 'luz', 'b': 'brilhante', 'c': 'escuro', 'd': 'transparente'}, 'a'),
+        Desafio("Qual a forma correta da conjugação do verbo 'correr' na primeira pessoa do singular?", {'a': 'corri', 'b': 'corro', 'c': 'corre', 'd': 'correr'}, 'a'),
     ]
     
     indice_desafio = 0
     player_vidas = 3
 
     while True:
-        tela.fill((255, 182, 193))  # Preenche a tela com rosa
+        tela.fill((255, 204, 255))  # Preenche a tela com a cor desejada
 
         if indice_desafio >= len(desafios_portugues):
             break
@@ -193,7 +261,7 @@ def tela_rosa():
 
        
         pergunta_surface = font.render(desafio_atual.pergunta, True, (0, 0, 0))
-        tela.blit(pergunta_surface, (60, 40))
+        tela.blit(pergunta_surface, (20, 40))
 
        
         y_offset = 100
@@ -233,7 +301,6 @@ def fim_de_jogo():
         mensagem2 = font.render("Pressione R para retornar a tela inicial", True, (255, 255, 255))
         tela.blit(mensagem, (120, 250))
         tela.blit(mensagem2, (120, 290))
-
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -243,11 +310,13 @@ def fim_de_jogo():
             if event.type == pygame.KEYDOWN:
                 if event.key == K_r:
                     tela_inicial()
+
 def tela_final():
     while True:
-        tela.fill((0, 255, 0)) 
-        mensagem = font.render("Parabéns! Você completou o jogo!", True, (255, 255, 255))
-        tela.blit(mensagem, (150, 250))
+        font = pygame.font.Font(None, 38)
+        tela.fill((97, 7, 7)) 
+        mensagem = font.render("PARABENS! VOCÊ COMPLETOU O JOGO", True, (255, 255, 255))
+        tela.blit(mensagem, (120, 250))
 
         pygame.display.flip()
 
@@ -257,7 +326,7 @@ def tela_final():
                 exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == K_RETURN:
-                    return  
+                    tela_inicial()  
 
 rodando = True
 while rodando:
