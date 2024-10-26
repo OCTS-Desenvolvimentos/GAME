@@ -120,6 +120,8 @@ def jogo():
     professor_matematica = pygame.transform.scale(professor_matematica, (90, 90))
     professor_rect = professor_matematica.get_rect(topright=(tela_width, 40))
     velocidade = 0.59
+    personagem_imagem = pygame.image.load("img/shrek.png")  # Carregando a imagem do Shrek
+    personagem_imagem = pygame.transform.scale(personagem_imagem, (50, 50))
 
     while True:
         for event in pygame.event.get():
@@ -142,7 +144,7 @@ def jogo():
 
         tela.fill((255, 235, 205))  # Limpa a tela
         tela.blit(professor_matematica, professor_rect.topleft) 
-        pygame.draw.rect(tela, (255, 0, 0), player)  
+        tela.blit(personagem_imagem, player.topleft)
         pygame.display.flip()
 
 def perguntas_mat():
@@ -209,6 +211,8 @@ def tela_branca():
     player = pygame.Rect(250, 200, 50, 50)
     professora_portugues = pygame.Rect(450, 100, 50, 50)
     velocidade = 0.59
+    personagem_imagem = pygame.image.load("img/shrek.png")  # Carregando a imagem do Shrek
+    personagem_imagem = pygame.transform.scale(personagem_imagem, (50, 50))
 
     while True:
         for event in pygame.event.get():
@@ -230,8 +234,8 @@ def tela_branca():
             perguntas_port()  # Chama as perguntas de portugues ao colidir
 
         tela.fill((255, 235, 205))  # Limpa a tela
-        pygame.draw.rect(tela, (0, 0, 255), player)
         pygame.draw.rect(tela, (255, 0, 255), professora_portugues)
+        tela.blit(personagem_imagem, player.topleft)
         pygame.display.flip()
 
 def perguntas_port():
