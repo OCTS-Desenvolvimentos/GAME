@@ -97,22 +97,56 @@ def tela_inicial():
 
 def caixa_dialogo():
     cenario = pygame.transform.scale(pygame.image.load("img/background.webp"), (tela_width, tela_height))
+    font = pygame.font.Font(None,25)
+    mensagens = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit,', 'Lorasjhhaiopsughaopishgaoipsgh ja', 'asiohjgaopishgjaopishgaopishg']
+    if not mensagens:
+         jogo()
+         return
+    snip = font.render('', True, 'white')
+    contador = 0
+    velo_texto = 3
+    done = False
+    timer = pygame.time.Clock()
+    mensagem = font.render("Aperte E para pular o diálogo", True, (169,169,169))
+    mensagem_ativa = 0
+    message = mensagens[mensagem_ativa]
+
     while True:
-        font = pygame.font.Font(None,25)
-        tela.fill((0,0,0))
         tela.blit(cenario, (0, 0))
-        mensagem = font.render("Aperte E para pular o diálogo", True, (169,169,169))
         tela.blit(mensagem, (30, 0))
+        pygame.draw.rect(tela, 'black', [0, 400, 800, 200])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit() 
+                
             if event.type == pygame.KEYDOWN:
                 if event.key == K_e:
-                    jogo()
+                    jogo() 
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN and done:
+                    mensagem_ativa += 1
+                    if mensagem_ativa < len(mensagens):
+                        done = False
+                        message = mensagens[mensagem_ativa]
+                        contador = 0
+                    else:
+                        jogo()
+                        return
+                         
+                 
+        if contador < velo_texto * len(message):
+                    contador += 1
+        elif contador >= velo_texto * len(message):
+                    done = True
+        snip = font.render(message[0:contador//velo_texto], True, 'white')
+        tela.blit(snip, (10, 410))
 
         pygame.display.flip()
+        timer.tick(60)
+            
 
 def jogo():
     player = pygame.Rect(400,100, 50, 50)
