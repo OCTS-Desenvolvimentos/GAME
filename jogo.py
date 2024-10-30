@@ -23,7 +23,34 @@ som_acertos.set_volume(1)
 som_erros = pygame.mixer.Sound('smw_lemmy_wendy_incorrect.wav')
 som_erros.set_volume(1)
 
-
+relogio = pygame.time.Clock()
+class Shrek(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.sprites = []
+        for i in range(0, 8):
+            self.sprites.append(pygame.image.load(f"img/shrek2ofilme/sprite_{i}.png"))
+        self.atual = 0
+        self.image = self.sprites[self.atual]
+        self.image = pygame.transform.scale(self.image, (64*2, 64*2))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = 100, 100
+        self.animar = False
+    def banana(self):
+        self.animar = True
+    def update(self):
+        if self.animar == True:
+            self.atual += 0.4
+            if self.atual >= len(self.sprites):
+                self.atual = 0
+                self.animar = False
+            self.image = self.sprites[int(self.atual)]
+            self.image = pygame.transform.scale(self.image, (64*2, 64*2))
+            
+    
+shrek = Shrek()
+toad_sprites = pygame.sprite.Group()
+toad_sprites.add(shrek)
     
 class Desafio:
     def __init__(self, pergunta, opcoes, resposta_correta):
@@ -149,36 +176,44 @@ def caixa_dialogo():
             
 
 def jogo():
-    player = pygame.Rect(400,100, 50, 50)
+    player = pygame.Rect(shrek)
     professor_matematica = pygame.image.load("img/marcelo.png")
     professor_matematica = pygame.transform.scale(professor_matematica, (90, 90))
     professor_rect = professor_matematica.get_rect(topright=(tela_width, 40))
-    velocidade = 0.59
-    personagem_imagem = pygame.image.load("img/shrek.png")  # Carregando a imagem do Shrek
-    personagem_imagem = pygame.transform.scale(personagem_imagem, (50, 50))
+    velocidade = 9
+    toad_sprites.draw(tela)
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-
+        
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
             player.x -= velocidade
+            shrek.banana()
+            shrek.image = pygame.transform.flip(shrek.image, True, False)    
         if keys[K_RIGHT]:
             player.x += velocidade
+            shrek.banana()
         if keys[K_UP]:
             player.y -= velocidade
+            shrek.banana()
         if keys[K_DOWN]:
             player.y += velocidade
-
+            shrek.banana()
+        if not keys[K_DOWN] and not keys[K_RIGHT] and not keys[K_UP] and not keys[K_LEFT]:
+            shrek.animar = False
         if player.colliderect(professor_rect):
             perguntas_mat()  # Chama as perguntas quando o player encosta no professor
 
         tela.fill((255, 235, 205))  # Limpa a tela
         tela.blit(professor_matematica, professor_rect.topleft) 
-        tela.blit(personagem_imagem, player.topleft)
+        tela.blit(shrek.image, player.topleft)
+        
+        toad_sprites.update()
+        relogio.tick(30)
         pygame.display.flip()
 
 def perguntas_mat():
