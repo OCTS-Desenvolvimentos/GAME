@@ -222,18 +222,7 @@ def jogo():
 def perguntas_mat():
     desafios_matematica = [
         Desafio("Qual a soma dos ângulos internos de um  hexágono?", {'a': '540°', 'b': '720°', 'c': '900°', 'd': '1080°'}, 'b'),
-        Desafio("Qual a equação da reta que passa pelos pontos (1, 2) e (3, 4)?", {'a': 'y = x + 1', 'b': 'y = 2x', 'c': 'y = x + 1', 'd': 'y = 2x - 1'}, 'a'),
-        Desafio("Qual a solução da equação x² - 5x + 6 = 0?", {'a': 'x = 2 ou x = 3', 'b': 'x = 1 ou x = 6', 'c': 'x = 0 ou x = 5', 'd': 'x = -2 ou x = -3'}, 'a'),
-        Desafio("Qual o valor de e^0?", {'a': '0', 'b': '1', 'c': 'e', 'd': 'infinito'}, 'b'),
-        Desafio("Qual o valor de log10(100)?", {'a': '1', 'b': '2', 'c': '3', 'd': '4'}, 'b'),
-        Desafio("Qual o valor de √144?", {'a': '10', 'b': '11', 'c': '12', 'd': '14'}, 'c'),
-        Desafio("Qual o valor de f(1) se f(x) = 2x² + 3x - 5?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Qual o valor de tan(45°)?", {'a': '0', 'b': '1', 'c': '2', 'd': 'infinito'}, 'b'),
-        Desafio("Qual a razão áurea?", {'a': '(1 + √5)/2', 'b': '(1 - √5)/2', 'c': '√5/2', 'd': '√2'}, 'a'),
-        Desafio("Qual a fórmula para a área de um triângulo?", {'a': 'base * altura / 2', 'b': 'base + altura', 'c': 'base * altura', 'd': '(base + altura) / 2'}, 'a'),
-        Desafio("Qual a integral definida de f(x) = x entre 1 e 3?", {'a': '2', 'b': '3', 'c': '4', 'd': '5'}, 'd'),
-        Desafio("Qual a solução da equação 3x - 2 = 10?", {'a': '2', 'b': '4', 'c': '5', 'd': '6'}, 'c'),
-        Desafio("Qual o resultado de 5!/3!?", {'a': '10', 'b': '15', 'c': '20', 'd': '25'}, 'c'),
+
     ]
     random.shuffle(desafios_matematica)  
 
@@ -259,7 +248,7 @@ def perguntas_mat():
             tela.blit(opcao_surface, (50, y_offset))
             y_offset += 50
 
-        # Renderiza as vidas
+        
         vidas_surface = font.render(f'Vidas: {player_vidas}', True, (255, 0, 0))
         tela.blit(vidas_surface, (650, 90))
 
@@ -347,12 +336,122 @@ def perguntas_port():
     player_vidas = 3
 
     while True:
-        tela.fill((255, 204, 255))  # Preenche a tela com a cor desejada
+        tela.fill((255, 204, 255)) 
 
         if indice_desafio >= len(desafios_portugues):
             break
 
         desafio_atual = desafios_portugues[indice_desafio]
+
+       
+        pergunta_surface = font.render(desafio_atual.pergunta, True, (0, 0, 0))
+        tela.blit(pergunta_surface, (10, 40))
+
+       
+        y_offset = 100
+        for key, value in desafio_atual.opcoes.items():
+            opcao_surface = font.render(f"{key}) {value}", True, (0, 0, 0))
+            tela.blit(opcao_surface, (50, y_offset))
+            y_offset += 50
+
+       
+        vidas_surface = font.render(f'Vidas: {player_vidas}', True, (255, 0, 0))
+        tela.blit(vidas_surface, (650, 90))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key in [K_a, K_b, K_c, K_d]:
+                    resposta = chr(event.key)
+                    if resposta == desafio_atual.resposta_correta:
+                        indice_desafio += 1
+                        som_acertos.play()
+                    else:
+                        som_erros.play()
+                        player_vidas -= 1  
+                        if player_vidas <= 0:
+                            fim_de_jogo() 
+
+    pagina()
+
+def pagina():
+    player = pygame.Rect(shrek)
+    velocidade = 8
+    professora_fis = pygame.image.load("img/doris.png")
+    professora_fis = pygame.transform.scale(professora_fis, (90,90))
+    professora_rect = professora_fis.get_rect(topleft=(250, 500))  # Coloca a professora no canto superior esquerdo
+    toad_sprites.draw(tela)
+    cenario = pygame.transform.scale(pygame.image.load("img/cenario1.jpg"), (tela_width, tela_height))
+
+    while True:
+        tela.blit(cenario, (0, 0))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+        keys = pygame.key.get_pressed()
+        if keys[K_LEFT]:
+            shrek.banana()
+            shrek.image = pygame.transform.flip(shrek.image, True, False) 
+            player.x -= velocidade
+        if keys[K_RIGHT]:
+            shrek.banana()
+            player.x += velocidade
+        if keys[K_UP]:
+            shrek.banana()
+            player.y -= velocidade
+        if keys[K_DOWN]:
+            shrek.banana()
+            player.y += velocidade
+        if not keys[K_DOWN] and not keys[K_RIGHT] and not keys[K_UP] and not keys[K_LEFT]:
+            shrek.animar = False   
+
+        if player.colliderect(professora_rect):
+            perguntas_fis()  # Chama as perguntas de portugues ao colidir
+
+       # tela.fill((255, 235, 205))  # Limpa a tela
+        tela.blit(professora_fis, professora_rect.topright)
+        tela.blit(shrek.image, player.topleft)
+        
+        toad_sprites.update()
+        relogio.tick(30)
+        pygame.display.flip()
+
+def perguntas_fis():
+    desafios_fisica = [
+        Desafio("Qual das opções abaixo é a unidade de potência?", {'a': 'Newton', 'b': 'Pascal', 'c': 'Watt', 'd': 'Joule'}, 'c'),
+        Desafio("Qual é a fórmula da velocidade média?", {'a': 'v = d + t', 'b': 'v = d / t', 'c': 'v = t / d', 'd': 'v = d * t'}, 'b'),
+        Desafio("A energia cinética é calculada como:", {'a': 'E_c = mgh', 'b': 'E_c = m + v', 'c': 'E_c = mv^2 / 2', 'd': 'E_c = v^2 / m'}, 'c'),
+        Desafio("A segunda lei de Newton estabelece que a força é:", {'a': 'Proporcional à massa', 'b': 'Proporcional ao deslocamento', 'c': 'Proporcional à velocidade', 'd': 'Inversamente proporcional à aceleração'}, 'a'),
+        Desafio("A unidade de pressão no Sistema Internacional é:", {'a': 'Joule', 'b': 'Newton', 'c': 'Watt', 'd': 'Pascal'}, 'd'),
+        Desafio("No movimento retilíneo uniformemente variado, qual é a principal característica?", {'a': 'Aceleração constante', 'b': 'Velocidade constante', 'c': 'Trajetória circular', 'd': 'Força constante'}, 'a'),
+        Desafio("A unidade de energia no Sistema Internacional é:", {'a': 'Pascal', 'b': 'Newton', 'c': 'Joule', 'd': 'Watt'}, 'c'),
+        Desafio("O que a terceira lei de Newton afirma?", {'a': 'Força é igual a massa vezes aceleração', 'b': 'Aceleração é constante', 'c': 'A energia é conservada', 'd': 'Para toda ação, há uma reação igual e oposta'}, 'd'),
+        Desafio("Qual é a fórmula do trabalho realizado por uma força constante?", {'a': 'W = F + d', 'b': 'W = F * d', 'c': 'W = d / F', 'd': 'W = F / d'}, 'b'),
+        Desafio("Qual a unidade de velocidade no Sistema Internacional?", {'a': 'm/s', 'b': 'm/s²', 'c': 'Newton', 'd': 'Joule'}, 'a'),
+        Desafio("A energia potencial gravitacional de um corpo é dada por:", {'a': 'E_p = mv^2 / 2', 'b': 'E_p = mg * v', 'c': 'E_p = mgh', 'd': 'E_p = v / m'}, 'c'),
+        Desafio("O que representa o princípio da conservação da energia?", {'a': 'Energia é sempre crescente', 'b': 'Energia depende do calor', 'c': 'Energia não pode ser criada nem destruída, apenas transformada', 'd': 'Energia é perdida com o tempo'}, 'c'),
+        Desafio("Qual é a fórmula da aceleração?", {'a': 'a = v * t', 'b': 'a = Δv / Δt', 'c': 'a = v / t', 'd': 'a = d / t'}, 'b'),
+    ]
+
+    random.shuffle(desafios_fisica)
+    
+
+    indice_desafio = 0
+    player_vidas = 3
+
+    while True:
+        tela.fill((255, 204, 255)) 
+
+        if indice_desafio >= len(desafios_fisica):
+            break
+
+        desafio_atual = desafios_fisica[indice_desafio]
 
        
         pergunta_surface = font.render(desafio_atual.pergunta, True, (0, 0, 0))
@@ -387,8 +486,7 @@ def perguntas_port():
                         if player_vidas <= 0:
                             fim_de_jogo()  # Chama a tela de fim de jogo
 
-    tela_final()
-     
+    tela_final()     
 
 def fim_de_jogo():
     while True:
