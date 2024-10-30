@@ -180,7 +180,7 @@ def jogo():
     professor_matematica = pygame.image.load("img/marcelo.png")
     professor_matematica = pygame.transform.scale(professor_matematica, (90, 90))
     professor_rect = professor_matematica.get_rect(topright=(tela_width, 40))
-    velocidade = 9
+    velocidade = 8
     toad_sprites.draw(tela)
 
     while True:
@@ -277,11 +277,12 @@ def perguntas_mat():
     tela_branca()  # Chama a próxima tela se todas as perguntas forem certas
 
 def tela_branca():
-    player = pygame.Rect(250, 200, 50, 50)
-    professora_portugues = pygame.Rect(450, 100, 50, 50)
-    velocidade = 0.59
-    personagem_imagem = pygame.image.load("img/shrek.png")  # Carregando a imagem do Shrek
-    personagem_imagem = pygame.transform.scale(personagem_imagem, (50, 50))
+    player = pygame.Rect(shrek)
+    velocidade = 8
+    professora_portugues = pygame.image.load("img/patricia.png")
+    professora_portugues = pygame.transform.scale(professora_portugues, (90,90))
+    professora_rect = professora_portugues.get_rect(topleft=(80, 500))  # Coloca a professora no canto superior esquerdo
+    toad_sprites.draw(tela)
 
     while True:
         for event in pygame.event.get():
@@ -291,20 +292,30 @@ def tela_branca():
 
         keys = pygame.key.get_pressed()
         if keys[K_LEFT]:
+            shrek.banana()
+            shrek.image = pygame.transform.flip(shrek.image, True, False) 
             player.x -= velocidade
         if keys[K_RIGHT]:
+            shrek.banana()
             player.x += velocidade
         if keys[K_UP]:
+            shrek.banana()
             player.y -= velocidade
         if keys[K_DOWN]:
+            shrek.banana()
             player.y += velocidade
+        if not keys[K_DOWN] and not keys[K_RIGHT] and not keys[K_UP] and not keys[K_LEFT]:
+            shrek.animar = False   
 
-        if player.colliderect(professora_portugues):
+        if player.colliderect(professora_rect):
             perguntas_port()  # Chama as perguntas de portugues ao colidir
 
         tela.fill((255, 235, 205))  # Limpa a tela
-        pygame.draw.rect(tela, (255, 0, 255), professora_portugues)
-        tela.blit(personagem_imagem, player.topleft)
+        tela.blit(professora_portugues, professora_rect.topright)
+        tela.blit(shrek.image, player.topleft)
+        
+        toad_sprites.update()
+        relogio.tick(30)
         pygame.display.flip()
 
 def perguntas_port():
