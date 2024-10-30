@@ -6,7 +6,7 @@ import random
 
 pygame.init()
 
-tela_width = 800
+tela_width = 1200
 tela_height = 600
 
 tela = pygame.display.set_mode((tela_width, tela_height))
@@ -99,11 +99,11 @@ def tela_inicial():
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
         MENU_TEXTO = get_font(30).render("SHREK - BACK TO SCHOOL", True, "#2F922F")
-        MENU_RECT = MENU_TEXTO.get_rect(center=(420, 100))
+        MENU_RECT = MENU_TEXTO.get_rect(center=(620, 100))
 
-        BOTAO_JOGAR = Button(image=pygame.image.load("img/Play Rect.png"), pos=(394, 250), 
+        BOTAO_JOGAR = Button(image=pygame.image.load("img/Play Rect.png"), pos=(624, 250), 
                             text_input="JOGAR", font=get_font(25), base_color="#d7fcd4", hovering_color="Green")
-        BOTAO_SAIR = Button(image=pygame.image.load("img/Quit Rect.png"), pos=(394, 420), 
+        BOTAO_SAIR = Button(image=pygame.image.load("img/Quit Rect.png"), pos=(624, 420), 
                             text_input="SAIR", font=get_font(25), base_color="#d7fcd4", hovering_color="Green")
 
         tela.blit(MENU_TEXTO, MENU_RECT)
@@ -142,7 +142,7 @@ def caixa_dialogo():
     while True:
         tela.blit(cenario, (0, 0))
         tela.blit(mensagem, (30, 0))
-        pygame.draw.rect(tela, '#A9A9A9', [0, 400, 800, 160])
+        pygame.draw.rect(tela, '#A9A9A9', [0, 400, 1200, 160])
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -221,21 +221,19 @@ def jogo():
 
 def perguntas_mat():
     desafios_matematica = [
-        Desafio("Qual é a derivada de f(x) = 4x³ - 3x² + 2x - 1?", {'a': '12x² - 6x + 2', 'b': '12x² - 6x', 'c': '8x² - 6x + 2', 'd': '12x² + 6x + 2'}, 'a'),
-        Desafio("Qual é a soma dos ângulos internos de um  hexágono?", {'a': '540°', 'b': '720°', 'c': '900°', 'd': '1080°'}, 'b'),
-        Desafio("Qual é a equação da reta que passa pelos pontos (1, 2) e (3, 4)?", {'a': 'y = x + 1', 'b': 'y = 2x', 'c': 'y = x + 1', 'd': 'y = 2x - 1'}, 'a'),
-        Desafio("Qual é a solução da equação x² - 5x + 6 = 0?", {'a': 'x = 2 ou x = 3', 'b': 'x = 1 ou x = 6', 'c': 'x = 0 ou x = 5', 'd': 'x = -2 ou x = -3'}, 'a'),
-        Desafio("Qual é o valor de e^0?", {'a': '0', 'b': '1', 'c': 'e', 'd': '∞'}, 'b'),
-        Desafio("Qual é o valor de log10(100)?", {'a': '1', 'b': '2', 'c': '3', 'd': '4'}, 'b'),
-        Desafio("Qual é o valor de √144?", {'a': '10', 'b': '11', 'c': '12', 'd': '14'}, 'c'),
-        Desafio("Qual é o valor de f(1) se f(x) = 2x² + 3x - 5?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
-        Desafio("Qual é o valor de tan(45°)?", {'a': '0', 'b': '1', 'c': '2', 'd': '∞'}, 'b'),
-        Desafio("Qual é a razão áurea?", {'a': '(1 + √5)/2', 'b': '(1 - √5)/2', 'c': '√5/2', 'd': '√2'}, 'a'),
-        Desafio("Qual é a fórmula para a área de um triângulo?", {'a': 'base * altura / 2', 'b': 'base + altura', 'c': 'base * altura', 'd': '(base + altura) / 2'}, 'a'),
-        Desafio("Qual é a integral definida de f(x) = x entre 1 e 3?", {'a': '2', 'b': '3', 'c': '4', 'd': '5'}, 'd'),
-        Desafio("Qual é a solução da equação 3x - 2 = 10?", {'a': '2', 'b': '4', 'c': '5', 'd': '6'}, 'c'),
-        Desafio("Qual é o resultado de 5!/3!?", {'a': '10', 'b': '15', 'c': '20', 'd': '25'}, 'c'),
-        Desafio("Qual é o valor de d/dx(e^2x)?", {'a': 'e^2x', 'b': '2e^2x', 'c': '3e^2x', 'd': '4e^2x'}, 'b'),
+        Desafio("Qual a soma dos ângulos internos de um  hexágono?", {'a': '540°', 'b': '720°', 'c': '900°', 'd': '1080°'}, 'b'),
+        Desafio("Qual a equação da reta que passa pelos pontos (1, 2) e (3, 4)?", {'a': 'y = x + 1', 'b': 'y = 2x', 'c': 'y = x + 1', 'd': 'y = 2x - 1'}, 'a'),
+        Desafio("Qual a solução da equação x² - 5x + 6 = 0?", {'a': 'x = 2 ou x = 3', 'b': 'x = 1 ou x = 6', 'c': 'x = 0 ou x = 5', 'd': 'x = -2 ou x = -3'}, 'a'),
+        Desafio("Qual o valor de e^0?", {'a': '0', 'b': '1', 'c': 'e', 'd': 'infinito'}, 'b'),
+        Desafio("Qual o valor de log10(100)?", {'a': '1', 'b': '2', 'c': '3', 'd': '4'}, 'b'),
+        Desafio("Qual o valor de √144?", {'a': '10', 'b': '11', 'c': '12', 'd': '14'}, 'c'),
+        Desafio("Qual o valor de f(1) se f(x) = 2x² + 3x - 5?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
+        Desafio("Qual o valor de tan(45°)?", {'a': '0', 'b': '1', 'c': '2', 'd': 'infinito'}, 'b'),
+        Desafio("Qual a razão áurea?", {'a': '(1 + √5)/2', 'b': '(1 - √5)/2', 'c': '√5/2', 'd': '√2'}, 'a'),
+        Desafio("Qual a fórmula para a área de um triângulo?", {'a': 'base * altura / 2', 'b': 'base + altura', 'c': 'base * altura', 'd': '(base + altura) / 2'}, 'a'),
+        Desafio("Qual a integral definida de f(x) = x entre 1 e 3?", {'a': '2', 'b': '3', 'c': '4', 'd': '5'}, 'd'),
+        Desafio("Qual a solução da equação 3x - 2 = 10?", {'a': '2', 'b': '4', 'c': '5', 'd': '6'}, 'c'),
+        Desafio("Qual o resultado de 5!/3!?", {'a': '10', 'b': '15', 'c': '20', 'd': '25'}, 'c'),
     ]
     random.shuffle(desafios_matematica)  
 
@@ -321,7 +319,7 @@ def tela_branca():
         if player.colliderect(professora_rect):
             perguntas_port()  # Chama as perguntas de portugues ao colidir
 
-        tela.fill((255, 235, 205))  # Limpa a tela
+       # tela.fill((255, 235, 205))  # Limpa a tela
         tela.blit(professora_portugues, professora_rect.topright)
         tela.blit(shrek.image, player.topleft)
         
@@ -414,7 +412,7 @@ def tela_final():
         font = pygame.font.Font(None, 38)
         tela.fill((97, 7, 7)) 
         mensagem = font.render("PARABENS! VOCÊ COMPLETOU O JOGO", True, (255, 255, 255))
-        tela.blit(mensagem, (120, 250))
+        tela.blit(mensagem, (400, 250))
 
         pygame.display.flip()
 
