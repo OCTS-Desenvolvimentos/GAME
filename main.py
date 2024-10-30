@@ -222,7 +222,18 @@ def jogo():
 def perguntas_mat():
     desafios_matematica = [
         Desafio("Qual a soma dos ângulos internos de um  hexágono?", {'a': '540°', 'b': '720°', 'c': '900°', 'd': '1080°'}, 'b'),
-
+        Desafio("Qual a equação da reta que passa pelos pontos (1, 2) e (3, 4)?", {'a': 'y = x + 1', 'b': 'y = 2x', 'c': 'y = x + 1', 'd': 'y = 2x - 1'}, 'a'),
+        Desafio("Qual a solução da equação x² - 5x + 6 = 0?", {'a': 'x = 2 ou x = 3', 'b': 'x = 1 ou x = 6', 'c': 'x = 0 ou x = 5', 'd': 'x = -2 ou x = -3'}, 'a'),
+        Desafio("Qual o valor de e^0?", {'a': '0', 'b': '1', 'c': 'e', 'd': 'infinito'}, 'b'),
+        Desafio("Qual o valor de log10(100)?", {'a': '1', 'b': '2', 'c': '3', 'd': '4'}, 'b'),
+        Desafio("Qual o valor de √144?", {'a': '10', 'b': '11', 'c': '12', 'd': '14'}, 'c'),
+        Desafio("Qual o valor de f(1) se f(x) = 2x² + 3x - 5?", {'a': '0', 'b': '1', 'c': '2', 'd': '3'}, 'a'),
+        Desafio("Qual o valor de tan(45°)?", {'a': '0', 'b': '1', 'c': '2', 'd': 'infinito'}, 'b'),
+        Desafio("Qual a razão áurea?", {'a': '(1 + √5)/2', 'b': '(1 - √5)/2', 'c': '√5/2', 'd': '√2'}, 'a'),
+        Desafio("Qual a fórmula para a área de um triângulo?", {'a': 'base * altura / 2', 'b': 'base + altura', 'c': 'base * altura', 'd': '(base + altura) / 2'}, 'a'),
+        Desafio("Qual a integral definida de f(x) = x entre 1 e 3?", {'a': '2', 'b': '3', 'c': '4', 'd': '5'}, 'd'),
+        Desafio("Qual a solução da equação 3x - 2 = 10?", {'a': '2', 'b': '4', 'c': '5', 'd': '6'}, 'c'),
+        Desafio("Qual o resultado de 5!/3!?", {'a': '10', 'b': '15', 'c': '20', 'd': '25'}, 'c'),
     ]
     random.shuffle(desafios_matematica)  
 
